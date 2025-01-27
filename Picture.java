@@ -97,13 +97,23 @@ public class Picture extends SimplePicture {
             // bottom right side
 
 
-        }
     }
 
     /** Method to set the blue to 0 */
     public void zeroBlue() {
         Pixel[][] pixels = this.getPixels2D();
-
+        // identify the height of the picture
+        int height = pixels.length;
+        // identify the width of the picture
+        int width = pixels[0].length;
+        // traverse the rows
+        for(int row = 0; row < height; row++) {
+            // traverse the columns
+            for(int col = 0; col < width; col++) {
+                // zero out all the blue
+                pixels[row][col].setBlue(0);
+            }
+        }
     }
 
     /**
@@ -111,41 +121,121 @@ public class Picture extends SimplePicture {
      */
     public void keepOnlyBlue() {
         Pixel[][] pixels = this.getPixels2D();
-
+        // identify the height of the picture
+        int height = pixels.length;
+        // identify the width of the picture
+        int width = pixels[0].length;
+        // traverse the rows
+        for(int row = 0; row < height; row++){
+            // traverse the cilumns
+            for(int col = 0; col < width; col++){
+                // zero out all the blue
+                double ratio = (double)col/width;
+                int 
+                pixels[row][col].setRed(0 + (col/width));
+                pixels[row][col].setGreen(0 + (col/width));
+            }
+        }
     }
 
     /** Method that keeps only the red color */
     public void keepOnlyRed() {
         Pixel[][] pixels = this.getPixels2D();
-
+        // identify the height of the picture
+        int height = pixels.length;
+        // identify the width of the picture
+        int width = pixels[0].length;
+        // traverse the rows
+        for(int row = 0; row < height; row++) {
+            // traverse the columns
+            for(int col = 0; col < width; col++) {
+                // zero out all the blue
+                pixels[row][col].setRed(0);
+            }
+        }
     }
 
     /** Method that keeps only the green color */
     public void keepOnlyGreen() {
         Pixel[][] pixels = this.getPixels2D();
+        // identify the height of the picture
+        int height = pixels.length;
+        // identify the width of the picture
+        int width = pixels[0].length;
         // traverse the rows
-        // traverse the columns
-
+        for(int row = 0; row < height; row++) {
+            // traverse the columns
+            for(int col = 0; col < width; col++) {
+                // zero out all the blue
+                pixels[row][col].setGreen(0);
+            }
+        }
     }
 
     /** Method that negates the colors in the picture */
     public void negate() {
         Pixel[][] pixels = this.getPixels2D();
-
+        // identify the height of the picture
+        int height = pixels.length;
+        // identify the width of the picture
+        int width = pixels[0].length;
+        // traverse the rows
+        for(int row = 0; row < height; row++) {
+            // traverse the columns
+            for(int col = 0; col < width; col++) {
+                Pixel pixel = pixels[row][col];
+                // negate red, green, and blue
+                pixel.setRed(255 - pixel.getRed());
+                pixel.setGreen(255 - pixel.getGreen());
+                pixel.setBlue(255 - pixel.getBlue());
+            }
+        }
     }
 
     /** Method that makes the picture all shades of gray */
     public void grayscale() {
         Pixel[][] pixels = this.getPixels2D();
-
+        // identify the height of the picture
+        int height = pixels.length;
+        // identify the width of the picture
+        int width = pixels[0].length;
+        // traverse the rows
+        for(int row = 0; row < height; row++) {
+            // traverse the columns
+            for(int col = 0; col < width; col++) {
+                Pixel pixel = pixels[row][col];
+                // calculate average of red, green, and blue
+                int average = (pixel.getRed() + pixel.getGreen() + pixel.getBlue()) / 3;
+                // set all colors in pixel to average
+                pixel.setRed(average);
+                pixel.setGreen(average);
+                pixel.setBlue(average);
+            }
+        }
     }
 
     /**
      * Method to fix pictures taken underwater
      */
     public void fixUnderwater() {
-        Pixel[][] grid = this.getPixels2D();
-
+        Pixel[][] pixels = this.getPixels2D();
+        int height = pixels.length;
+        int width = pixels[0].length;
+        // loop through everything and reduce blue while bringing up red and green
+        for(int row = 0; row < height; row++){
+            for(int col = 0; col < width; col++){
+                // get the pixel
+                Pixel pixel = pixels[row][col];
+                // get the colors
+                int red = (int)(pixel.getRed() * 7.3);
+                int green = (int)(pixel.getGreen() * .7);
+                int blue = (int)(pixel.getBlue() * 1);
+                // adjust the colors
+                pixel.setBlue(blue);
+                pixel.setRed(red);
+                pixel.setGreen(green);
+            }
+        }
     }
 
     /**
@@ -153,8 +243,16 @@ public class Picture extends SimplePicture {
      * picture from left to right
      */
     public void mirrorVertical() {
-        Pixel[][] picture = this.getPixels2D();
-
+        Pixel[][] pixels = this.getPixels2D();
+        int width = pixels[0].length;
+        for(Pixel[] row : pixels) {
+            for(int col = 0; col < width / 2; col++) {
+                // mirror the pixels
+                Pixel leftPixel = row[col];
+                Pixel rightPixel = row[width - 1 - col];
+                rightPixel.setColor(leftPixel.getColor());
+            }
+        }
     }
 
     /**
@@ -163,7 +261,15 @@ public class Picture extends SimplePicture {
      */
     public void mirrorVerticalRightToLeft() {
         Pixel[][] pixels = this.getPixels2D();
-
+        int width = pixels[0].length;
+        for(Pixel[] row : pixels) {
+            for(int col = 0; col < width / 2; col++) {
+                // mirror the pixels
+                Pixel leftPixel = row[col];
+                Pixel rightPixel = row[width - 1 - col];
+                leftPixel.setColor(rightPixel.getColor());
+            }
+        }
     }
 
     /**
@@ -172,7 +278,21 @@ public class Picture extends SimplePicture {
      */
     public void mirrorHorizontal() {
         Pixel[][] pixels = this.getPixels2D();
-
+        // identify the height of the picture
+        int height = pixels.length;
+        // identify the width of the picture
+        int width = pixels[0].length;
+        // traverse HALF the rows
+        for(int row = 0; row < height / 2; row++) {
+            // traverse all of the columns
+            for(int col = 0; col < width; col++) {
+                Pixel topPixel = pixels[row][col];
+                // max - current is how you get the reflection: (height - 1 - row)
+                Pixel bottomPixel = pixels[height - 1  - row][col];
+                // set the bottom pixel equal to the top pixel
+                bottomPixel.setColor(topPixel.getColor());
+            }
+        }
     }
 
     /**
@@ -180,7 +300,22 @@ public class Picture extends SimplePicture {
      * the picture from bottom to top
      */
     public void mirrorHorizontalBotToTop() {
-
+        Pixel[][] pixels = this.getPixels2D();
+        // identify the height of the picture
+        int height = pixels.length;
+        // identify the width of the picture
+        int width = pixels[0].length;
+        // traverse HALF the rows
+        for(int row = 0; row < height / 2; row++) {
+            // traverse all of the columns
+            for(int col = 0; col < width; col++) {
+                Pixel topPixel = pixels[row][col];
+                // max - current is how you get the reflection: (height - 1 - row)
+                Pixel bottomPixel = pixels[height - 1  - row][col];
+                // set the bottom pixel equal to the top pixel
+                topPixel.setColor(bottomPixel.getColor());
+            }
+        }
     }
 
     /**
@@ -189,23 +324,61 @@ public class Picture extends SimplePicture {
      */
     public void mirrorDiagonal() {
         Pixel[][] pixels = this.getPixels2D();
-
+        // identify the height of the picture
+        int height = pixels.length;
+        // identify the width of the picture
+        int width = pixels[0].length;
+        // traverse the rows
+        for(int row = 0; row < height; row++) {
+            // traverse the columns, only going across in proportion to how far down I'm going
+            for(int col = 0; col < row; col++) {
+                // mirror the pixels
+                Pixel firstPixel = pixels[row][col];
+                Pixel secondPixel = pixels[col][row];
+                secondPixel.setColor(firstPixel.getColor());
+            }
+        }
     }
 
     /** Mirror just part of a picture of a temple */
     public void mirrorTemple() {
         Pixel[][] pixels = this.getPixels2D();
-
+        int colMax = 256;
+        for(int row = 30; row < 101; row++) {
+            for(int col = 0; col < 256; col++) {
+                Pixel leftPixel = pixels[row][col];
+                Pixel rightPixel = pixels[row][colMax - col];
+                // rightPixel.setColor(leftPixel.getColor());
+            }
+        }
     }
 
     /** Mirror just part of a picture of a snowman */
     public void mirrorArms() {
-
+        Pixel[][] pixels = this.getPixels2D();
+        int max1 = 194;
+        int count = 0;
+        for(int row = 156; row <= 202; row++) {
+            for(int col = 101; col <= 170; col++) {
+                Pixel pete = pixels[row][col];
+                pixels[(max1-count)+40][col].setColor(pete.getColor());
+            }
+            count++;
+        }
     }
 
     /** Mirror just the gull */
     public void mirrorGull() {
-
+        Pixel[][] pixels = this.getPixels2D();
+        int max1 = 347;
+        int count = 0;
+        for(int row = 233; row <= 327; row++) {
+            for(int col = 233; col <= 347; col++) {
+                Pixel birdy = pixels[row][col];
+                pixels[row - 10][max1 - col].setColor(birdy.getColor());
+            }
+            count++;
+        }
     }
 
     /**
