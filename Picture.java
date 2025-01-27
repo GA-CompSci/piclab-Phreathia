@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.text.*;
 import java.util.*;
 import java.util.List; // resolves problem with java.awt.List and java.util.List
+import java.util.function.Consumer;
 
 /**
  * A class that represents a picture. This class inherits from SimplePicture and
@@ -387,12 +388,21 @@ public class Picture extends SimplePicture {
      * @param edgeDist the distance for finding edges
      */
     public void edgeDetection(int edgeDist) {
+        Pixel[][] pixels = this.getPixels2D();
         Pixel leftPixel = null;
         Pixel rightPixel = null;
-        Pixel[][] pixels = this.getPixels2D();
-        Picture swan = new Picture("swan.jpg");
-        Pixel[][] original = swan.getPixels2D();
-
+        Color rightColor = null;
+        for (int row = 0; row < pixels.length; row++) {
+            for (int col = 0; col < pixels[0].length - 1; col++) {
+                leftPixel = pixels[row][col];
+                rightPixel = pixels[row][col+1];
+                rightColor = rightPixel.getColor();
+                if (leftPixel.colorDistance(rightColor) > edgeDist) {
+                    leftPixel.setColor(Color.BLACK);
+                }
+                else leftPixel.setColor(Color.WHITE);
+            }
+        }
     }
 
     /**
@@ -401,15 +411,27 @@ public class Picture extends SimplePicture {
      * @param edgeDist the distance for finding edges
      */
     public void customEdgeDetection(int edgeDist) {
-        Picture copy = new Picture(this);
-
+        
     }
 
     /** Method to create a collage of several pictures */
     public void createCollage() {
-        Pixel[][] pixels = this.getPixels2D();
-
-        this.popArt();
+        Picture drippycheese = new Picture("drippycheesebru.jpg");
+        Picture belladogdog = new Picture("bellarealpainting.jpg");
+        Picture bOSNAIA = new Picture("bosniiaaaa.jpg");
+        Picture grimaceMyBeloved = new Picture("drippace.jpg");
+        this.copy(bOSNAIA, 0, 0);
+        this.copy(drippycheese,0,0);
+        this.copy(belladogdog,100,0);
+        this.copy(drippycheese,200,0);
+        Picture flowerNoBlue = new Picture(belladogdog);
+        flowerNoBlue.zeroBlue();
+        this.copy(flowerNoBlue,300,0);
+        this.copy(drippycheese,400,0);
+        this.copy(belladogdog,500,0);
+        this.mirrorVertical();
+        this.copy(grimaceMyBeloved, 100, 180);
+        this.write("collage.jpg");
     }
 
     /**

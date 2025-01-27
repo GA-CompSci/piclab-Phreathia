@@ -38,8 +38,8 @@ public class PictureTester {
         // ---------------
         // ACTIVITY 7
         // testMirrorTemple();
-        testMirrorArms();
-        //testMirrorGull();
+        // testMirrorArms();
+        // testMirrorGull();
 
         // ---------------
         // ACTIVITY 8
@@ -47,7 +47,7 @@ public class PictureTester {
 
         // ---------------
         // ACTIVITY 9
-        // testEdgeDetection();
+        testEdgeDetection();
 
         // ---EXTRA---
         // testPopArt();
@@ -88,7 +88,7 @@ public class PictureTester {
 
     /** Method to test negate */
     public static void testNegate() {
-        Picture beach = new Picture("beach.jpg");
+        Picture beach = new Picture("drippace.jpg");
         beach.negate();
         beach.explore();
     }
