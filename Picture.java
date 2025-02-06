@@ -344,12 +344,12 @@ public class Picture extends SimplePicture {
     /** Mirror just part of a picture of a temple */
     public void mirrorTemple() {
         Pixel[][] pixels = this.getPixels2D();
-        int colMax = 256;
+        int colMax = pixels[0].length - 1;
         for(int row = 30; row < 101; row++) {
             for(int col = 0; col < 256; col++) {
                 Pixel leftPixel = pixels[row][col];
                 Pixel rightPixel = pixels[row][colMax - col];
-                // rightPixel.setColor(leftPixel.getColor());
+                rightPixel.setColor(leftPixel.getColor());
             }
         }
     }
@@ -388,19 +388,58 @@ public class Picture extends SimplePicture {
      * @param edgeDist the distance for finding edges
      */
     public void edgeDetection(int edgeDist) {
-        Pixel[][] pixels = this.getPixels2D();
+
+        Pixel[][] originalPic = this.getPixels2D();
+        // identify the height of the picture
+        int height = originalPic.length;
+        // identify the width of the picture
+        int width = originalPic[0].length;
+        // traverse the rows
+        for(int row = 0; row < height; row++){
+            for(int col = 0; col < width; col++){
+                // get the pixel
+                Pixel pixel = originalPic[row][col];
+                // get the colors
+                int red = (int)(pixel.getRed() * 0);
+                int green = (int)(pixel.getGreen() * .0);
+                int blue = (int)(pixel.getBlue() * 0.6);
+                // adjust the colors
+                pixel.setBlue(blue);
+                pixel.setRed(red);
+                pixel.setGreen(green);
+            }
+        }
+
         Pixel leftPixel = null;
         Pixel rightPixel = null;
-        Color rightColor = null;
-        for (int row = 0; row < pixels.length; row++) {
-            for (int col = 0; col < pixels[0].length - 1; col++) {
+        Pixel bottomPixel = null;
+        Pixel diagonalPixel = null;
+        // the one we're modifying:
+        Pixel[][] pixels = originalPic;
+        // store a backup of the original, unmodified pixels
+        Picture swan = new Picture("swan.jpg");
+        Pixel[][] original = swan.getPixels2D();
+        // loop through all the rows. Stop one before the end
+        for(int row = 0; row < pixels.length - 1; row++){
+            // loop through all the columns. Stope one before the end
+            for(int col = 0; col < pixels[0].length - 1; col++){
+                // get the left pixel
                 leftPixel = pixels[row][col];
+                // get the right pixel. This is why we stop one early:
                 rightPixel = pixels[row][col+1];
-                rightColor = rightPixel.getColor();
-                if (leftPixel.colorDistance(rightColor) > edgeDist) {
-                    leftPixel.setColor(Color.BLACK);
+                // get bottom pixel
+                bottomPixel = pixels[row+1][col];
+                // get diagnonal pixel
+                diagonalPixel = pixels[row+1][col+1];
+                // TODO: compare more than two pixels against the given color distance
+                if(leftPixel.colorDistance(rightPixel.getColor()) > edgeDist || leftPixel.colorDistance(bottomPixel.getColor()) > edgeDist
+                || leftPixel.colorDistance(diagonalPixel.getColor()) > edgeDist) {
+                    // WE FOUND AN EDGE! set the color to black
+                    pixels[row][col].setColor(Color.BLACK);
+                } else {
+                    // Not an edge: set the color to white
+                    pixels[row][col].setColor(Color.WHITE);
                 }
-                else leftPixel.setColor(Color.WHITE);
             }
         }
     }
